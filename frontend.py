@@ -1,34 +1,59 @@
 import altair as alt
 import pandas as pd
 import streamlit as st
-from vega_datasets import data
-
+import cohere 
 
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
     for _ in range(num_lines):
         st.write("")
 
+# initialize the Cohere Client with an API Key
+co = cohere.Client('Ni4Rck1QBU4ODHfUpb2pKWOSgLm7Y6qYTUHeVQtz')
+
 # -------------------------------------------------------------------------------------------------------------------
 
 # -------------------------------------- FUNCTIONS ---------------------------------------------------------------------
 
+
+
 def inform_me(input):
     if len(input) == 0:
         return None
-    response = co.generate( 
-    model='large', 
-    prompt='summarise this text and tell me if there\'s any misinformation.'.format(input), 
-    max_tokens=100, 
-    temperature=0.1, 
-    k=0, 
-    p=1, 
-    frequency_penalty=0, 
-    presence_penalty=0, 
-    stop_sequences=["--"], 
-    return_likelihoods='NONE') 
-    
-    st.session_state['output'] = response.generations[0].text
+    if ''+textOrUrl+'' == 'Text':
+        response = co.generate( 
+        model='large', 
+        prompt='summarise this text and tell me if there\'s any misinformation.'.format(input), 
+        max_tokens=100, 
+        temperature=0.1, 
+        k=0, 
+        p=1, 
+        frequency_penalty=0, 
+        presence_penalty=0, 
+        stop_sequences=["--"], 
+        return_likelihoods='NONE') 
+        
+        st.session_state['output'] = response.generations[0].text
+        st.balloons()
+    else:
+        ## Scrape URL and put text to input
+        input = input
+        ### Continue
+        response = co.generate( 
+        model='large', 
+        prompt='summarise this text and tell me if there\'s any misinformation.'.format(input), 
+        max_tokens=100, 
+        temperature=0.1, 
+        k=0, 
+        p=1, 
+        frequency_penalty=0, 
+        presence_penalty=0, 
+        stop_sequences=["--"], 
+        return_likelihoods='NONE') 
+        
+        st.session_state['output'] = response.generations[0].text
+        st.balloons()
+
 
 alt.themes.enable("streamlit")
 # -------------------------------------------------------------------------------------------------------------------
@@ -62,7 +87,7 @@ st.sidebar.markdown(
     and create a short summary of its contents.
     """
 )
-
+textOrUrl= st.sidebar.selectbox('Are you entering a Text or URL', ('Text', 'URL'))
 # -------------------------------------------------------------------------------------------------------------------
 
 
@@ -96,7 +121,8 @@ expander_bar.markdown("""
 * **Data source:**
 * **Credit:** Web scraper adapted from).
 """)
-
-input = st.text_area('Enter your webiste URL', height=100)
-
+if ''+textOrUrl+'' == 'Text':
+    input = st.text_area('Enter your text', height=100)
+else:
+    input = st.text_area('Enter your webiste URL', height=100)
 st.button('Inform me', on_click = inform_me(input))
