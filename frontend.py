@@ -9,8 +9,35 @@ def space(num_lines=1):
     for _ in range(num_lines):
         st.write("")
 
-alt.themes.enable("streamlit")
+# -------------------------------------------------------------------------------------------------------------------
 
+# -------------------------------------- FUNCTIONS ---------------------------------------------------------------------
+
+def inform_me(input):
+    if len(input) == 0:
+        return None
+    response = co.generate( 
+    model='large', 
+    prompt='summarise this text and tell me if there\'s any misinformation.'.format(input), 
+    max_tokens=100, 
+    temperature=0.1, 
+    k=0, 
+    p=1, 
+    frequency_penalty=0, 
+    presence_penalty=0, 
+    stop_sequences=["--"], 
+    return_likelihoods='NONE') 
+    
+    st.session_state['output'] = response.generations[0].text
+
+alt.themes.enable("streamlit")
+# -------------------------------------------------------------------------------------------------------------------
+
+
+
+
+# -------------------------------------- SIDEBAR ---------------------------------------------------------------------
+# Generate a sidebar for the streamlit app
 st.set_page_config(
     page_title="DiscernAI", page_icon="⬇", layout="wide"
 )
@@ -42,9 +69,13 @@ st.sidebar.markdown(
 
 
 # ----------------------------------  MAIN PAGE ---------------------------------------------------------------------
+#---------------------------------#
+# Title
 st.title("DiscernAI")
 st.write("v1.0.0 by Discern")
 
+#---------------------------------#
+# introduction
 st.header("👋 Introduction")
 st.markdown(
     """
@@ -57,3 +88,15 @@ st.markdown(
     - 🔦 Shine a light on the way the information is being framed to shape your opinion
 """
 )
+#---------------------------------#
+# about
+expander_bar = st.expander("About")
+expander_bar.markdown("""
+* **Python libraries:** base64, pandas, streamlit, numpy, matplotlib, seaborn, BeautifulSoup, requests, json, time
+* **Data source:**
+* **Credit:** Web scraper adapted from).
+""")
+
+input = st.text_area('Enter your webiste URL', height=100)
+
+st.button('Inform me', on_click = inform_me(input))
