@@ -146,7 +146,7 @@ Your data is your most precious thing. Ditch your smart meters if you have them.
 )
 st.markdown(
     """
-    Example factual text text:
+    Example factual text:
 """
 )
 st.markdown(
