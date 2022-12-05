@@ -2,7 +2,8 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 import cohere 
-
+import prompttextclexit as ptc
+import prompttextsnaturalnews as ptnn
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
     for _ in range(num_lines):
@@ -15,7 +16,11 @@ co = cohere.Client('Ni4Rck1QBU4ODHfUpb2pKWOSgLm7Y6qYTUHeVQtz')
 
 # -------------------------------------- FUNCTIONS ---------------------------------------------------------------------
 
+text = ptc.text1
+summary = ptc.summary1
 
+text2 = ptnn.text1
+summary2 = ptnn.summary1
 
 def inform_me(input):
     if len(input) == 0:
@@ -23,7 +28,10 @@ def inform_me(input):
     if ''+textOrUrl+'' == 'Text':
         response = co.generate( 
         model='large', 
-        prompt='summarise this text and tell me if there\'s any misinformation.'.format(input), 
+        prompt=f'[{ptc.text1}:{ptc.summary1}\
+        --\
+        {ptnn.text1}:{ptnn.summary1}\
+        {input}:', 
         max_tokens=100, 
         temperature=0.1, 
         k=0, 
@@ -41,7 +49,7 @@ def inform_me(input):
         ### Continue
         response = co.generate( 
         model='large', 
-        prompt='summarise this text and tell me if there\'s any misinformation.'.format(input), 
+        prompt=f' {input}',
         max_tokens=100, 
         temperature=0.1, 
         k=0, 
@@ -64,7 +72,7 @@ alt.themes.enable("streamlit")
 # -------------------------------------- SIDEBAR ---------------------------------------------------------------------
 # Generate a sidebar for the streamlit app
 st.set_page_config(
-    page_title="DiscernAI", page_icon="⬇", layout="wide"
+    page_title="DiscernAI", page_icon="🧠", layout="wide"
 )
 
 # Generate a sidebar for the streamlit app
@@ -117,7 +125,7 @@ st.markdown(
 # about
 expander_bar = st.expander("About")
 expander_bar.markdown("""
-* **Python libraries:** base64, pandas, streamlit, numpy, matplotlib, seaborn, BeautifulSoup, requests, json, time
+* **Python libraries:**  streamlit, requests, json, time
 * **Data source:**
 * **Credit:** Web scraper adapted from).
 """)
@@ -126,3 +134,8 @@ if ''+textOrUrl+'' == 'Text':
 else:
     input = st.text_area('Enter your webiste URL', height=100)
 st.button('Inform me', on_click = inform_me(input))
+if "inform_me" not in st.session_state:
+    # set the initial default value of the slider widget
+    st.session_state.inform_me = st.write("waiting for input")
+else:
+    st.write(st.session_state.output)
