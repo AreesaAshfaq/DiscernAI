@@ -1,10 +1,8 @@
-import altair as alt
-import pandas as pd
 import streamlit as st
 import cohere 
-import prompttextclexit as ptc
-import prompttextsnaturalnews as ptnn
-import prompttextbowl as ptb
+from texts import prompttextclexit as ptc
+from texts import prompttextsnaturalnews as ptnn
+from texts import prompttextbowl as ptb
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
     for _ in range(num_lines):
@@ -65,7 +63,6 @@ def inform_me(input):
         st.balloons()
 
 
-alt.themes.enable("streamlit")
 # -------------------------------------------------------------------------------------------------------------------
 
 
