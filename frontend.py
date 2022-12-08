@@ -9,7 +9,8 @@ def space(num_lines=1):
         st.write("")
 
 # initialize the Cohere Client with an API Key
-co = cohere.Client('Ni4Rck1QBU4ODHfUpb2pKWOSgLm7Y6qYTUHeVQtz') 
+
+co = cohere.Client('API') 
 
 # -------------------------------------------------------------------------------------------------------------------
 
